@@ -14,7 +14,7 @@ st.set_page_config( # head tag
     layout="wide",
     initial_sidebar_state='expanded',
     menu_items={
-        'Get Help': 'https://github.com/112523chen/NYC-Airbnb-Data-Visualization-App',
+        'Get Help': 'https://github.com/hieutrn1205/CTP',
         'Report a bug': "https://github.com/hieutrn1205/CTP/issues/new",
         'About': """
                 ***Streamlit app*** that visualizes New York City Inspection data 
