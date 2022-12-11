@@ -1,6 +1,6 @@
 # NYC-Inspection-Data-Visualization-App
 
-![Project Demo]("demo.PNG")
+![Project Demo](demo.png)
 
 ## Project Description
 
