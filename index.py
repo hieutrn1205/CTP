@@ -270,42 +270,28 @@ with st.sidebar: #creates side bar
             options = industry_values
         )
 
-def creat_metric(df, borough, year):
+def create_metric(df, borough, year, industry):
     original = len(df)
+    cond1 = df["year"] > 1900
+    cond2 = df["year"] > 1900
+    cond3 = df["year"] > 1900
     if borough != "All":
-        if year != "All":
-            cond1 = df["borough"] == borough
-            cond2 = df["year"] == year
-            df = df[cond1&cond2]
-            num_inspection = len(df)
-            temp = round(((num_inspection - original)/original)*100)
-            temp = str(temp) + "%"
-            st.metric("Inspection in borough", num_inspection, temp)
-        else:
-            df = df[df["borough"] == borough]
-            num_inspection = len(df)
-            temp = round(((num_inspection - original)/original)*100)
-            temp = str(temp) + "%"
-            st.metric("Inspection in borough", num_inspection, temp)
-    else:
-        if year != "All":
-            df = df[df["year"] == year]
-            num_inspection = len(df)
-            temp = round(((num_inspection - original)/original)*100)
-            temp = str(temp) + "%"
-            st.metric("Inspection in borough", num_inspection, temp)
-        else:
-            num_inspection = len(df)
-            temp = round(((num_inspection - original)/original)*100)
-            temp = str(temp) + "%"
-            col1.metric("Inspection in borough", num_inspection, temp)
-
+        cond1 = df["borough"] == borough
+    if industry != "All":
+        cond2 = df["industry"] == industry
+    if year != "All":
+        cond3 = df["year"] == int(year)
+    df = df[cond1 & cond2 & cond3]
+    num_inspection = len(df)
+    temp = round((num_inspection/original)*100)
+    temp = str(temp) + "%"
+    st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', year)
 
 #Split to cols
 col1, col2 = st.columns([1,1])
 col1.title("NYC Inspection Data Visualizer") # H1 tag
 create_map(df, borough, year, industry)
-creat_metric(df, borough, year)
+create_metric(df, borough, year, industry)
 col2.title("Amount of monthly inspection in " + year)
 bar_chart(df, borough, year)
 st.title("Inspection results for " + industry + " industry in " + borough + " borough in " + year)
