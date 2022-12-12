@@ -65,46 +65,24 @@ def bar_chart(df,borough,year):
             col2.bar_chart(data, height = 550)
 
 
-def pie_chart(df, borough, industry):
+def pie_chart(df, borough, year, industry):
+    cond1 = df["year"] > 1900
+    cond2 = df["year"] > 1900
+    cond3 = df["year"] > 1900
     if borough != "All":
-        if industry != "All":
-            cond1 = df["borough"] == borough
-            cond2 = df["industry"] == industry
-            df = df[cond1 & cond2]
-            labels = [index for index in df["inspection result"].value_counts().index]
-            value = [value for value in df["inspection result"].value_counts().values]
-            fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig.update_traces(textposition='inside')
-            fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-            fig
-        else:
-            labels = [index for index in df[df["borough"] == borough]["inspection result"].value_counts().index]
-            value = [value for value in df[df["borough"] == borough]["inspection result"].value_counts().values]
-            fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig.update_traces(textposition='inside')
-            fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-            fig
-    else:
-        if industry != "All":
-            labels = [index for index in df[df["industry"] == industry]["inspection result"].value_counts().index]
-            value = [value for value in df[df["industry"] == industry]["inspection result"].value_counts().values]
-            fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig.update_traces(textposition='inside')
-            fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig
-        else:
-            labels = [index for index in df["inspection result"].value_counts().index]
-            value = [value for value in df["inspection result"].value_counts().values]
-            fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
-            fig.update_traces(textposition='inside')
-            fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
-            fig.update_layout(margin=dict(t=0, b=0, l=20, r=20))
-            fig
-
+        cond1 = df["borough"] == borough
+    if industry != "All":
+        cond2 = df["industry"] == industry
+    if year != "All":
+        cond3 = df["year"] == int(year)
+    df = df[cond1 & cond2 & cond3]
+    labels = [index for index in df["inspection result"].value_counts().index]
+    value = [value for value in df["inspection result"].value_counts().values]
+    fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
+    fig.update_traces(textposition='inside')
+    fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
+    fig
 
 def compared_bar(df, borough, year):
     if borough != "All":
@@ -325,13 +303,13 @@ def creat_metric(df, borough, year):
 
 #Split to cols
 col1, col2 = st.columns([1,1])
-col1.title("NYC Inspection Data Visualization") # H1 tag
+col1.title("NYC Inspection Data Visualizer") # H1 tag
 create_map(df, borough, year, industry)
 creat_metric(df, borough, year)
-col2.title("Amount monthly inspection in " + year)
+col2.title("Amount of monthly inspection in " + year)
 bar_chart(df, borough, year)
-st.title("Inspection's results in " + industry + " in borough " + borough)
-pie_chart(df, borough, industry)
+st.title("Inspection results for " + industry + " industry in " + borough + " borough in " + year)
+pie_chart(df, borough, year, industry)
 st.title("Number of Violation and Non-Violation in " + year)
 compared_bar(df, borough, year)
 
