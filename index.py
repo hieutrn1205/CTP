@@ -1,3 +1,4 @@
+from calendar import month
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -44,26 +45,7 @@ def create_map(df,borough,year,ind):
     if ind != "All":
         cond3 = df["industry"] == ind
     df = df[cond1 & cond2 & cond3]
-    col1.map(df)
-
-def bar_chart(df,borough,year):
-    if borough != "All":
-        if year != "All":
-            cond1 = df["borough"] == borough
-            cond2 = df["year"] == int(year)
-            data = df[cond1 & cond2]["inspection date"].dt.month.value_counts()
-            col2.bar_chart(data, height = 550)
-        else:
-            data = df[df["borough"] == borough]["inspection date"].dt.month.value_counts()
-            col2.bar_chart(data, height = 550)
-    else:
-        if year !="All":
-            data= df[df["year"] == int(year)]["inspection date"].dt.month.value_counts()
-            col2.bar_chart(data, height = 550)
-        else:
-            data = df["inspection date"].dt.month.value_counts()
-            col2.bar_chart(data, height = 550)
-
+    st.map(df)
 
 def pie_chart(df, borough, year, industry):
     cond1 = df["year"] > 1900
@@ -84,153 +66,46 @@ def pie_chart(df, borough, year, industry):
     fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
     fig
 
-def compared_bar(df, borough, year):
+def stacked_bar(df, borough, year, industry):
+    cond1 = df["year"] > 1900
+    cond2 = df["year"] > 1900
+    cond3 = df['year'] > 1900
     if borough != "All":
-        if year != "All":
-            cond1 = df["borough"] == borough
-            cond2 = df["year"] == int(year)
-            df = df[cond1 & cond2]
-            key = ["No Violation Issued", "Violation Issued"]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            no_violated= list()
-            violated = list()
-            key = ["No Violation Issued", "Violation Issued"]
-            for month in months:
-                temp_cond = df["inspection date"].dt.month == month
-                value  = dict(df[temp_cond]["inspection result"].value_counts())
-                for k in value:
-                    if k == key[0]:
-                        no_violated.append(value[k])
-                    if k == key[1]:
-                        violated.append(value[k])
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=months,
-                y=no_violated,
-                name='No Violation Issued',
-                marker_color='lightsalmon'
-            ))
-            fig.add_trace(go.Bar(
-                x=months,
-                y=violated,
-                name='Violation Issued',
-                marker_color='indianred'
-            ))
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
-            fig.update_layout(xaxis = dict(
-                    tickmode = 'linear',
-                    tick0 = 1,
-                    dtick = 1))
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig
-        else:
-            df = df[df["borough"] == borough]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            key = ["No Violation Issued", "Violation Issued"]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            no_violated= list()
-            violated = list()
-            key = ["No Violation Issued", "Violation Issued"]
-            for month in months:
-                temp_cond = df["inspection date"].dt.month == month
-                value  = dict(df[temp_cond]["inspection result"].value_counts())
-                for k in value:
-                    if k == key[0]:
-                        no_violated.append(value[k])
-                    if k == key[1]:
-                        violated.append(value[k])
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=months,
-                y=no_violated,
-                name='No Violation Issued',
-                marker_color='lightsalmon'
-            ))
-            fig.add_trace(go.Bar(
-                x=months,
-                y=violated,
-                name='Violation Issued',
-                marker_color='indianred'
-            ))
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
-            fig.update_layout(xaxis = dict(
-                    tickmode = 'linear',
-                    tick0 = 1,
-                    dtick = 1))
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig
-    else:
-        if year !="All":
-            df = df[df["year"] == int(year)]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            key = ["No Violation Issued", "Violation Issued"]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            no_violated= list()
-            violated = list()
-            key = ["No Violation Issued", "Violation Issued"]
-            for month in months:
-                temp_cond = df["inspection date"].dt.month == month
-                value  = dict(df[temp_cond]["inspection result"].value_counts())
-                for k in value:
-                    if k == key[0]:
-                        no_violated.append(value[k])
-                    if k == key[1]:
-                        violated.append(value[k])
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=months,
-                y=no_violated,
-                name='No Violation Issued',
-                marker_color='lightsalmon'
-            ))
-            fig.add_trace(go.Bar(
-                x=months,
-                y=violated,
-                name='Violation Issued',
-                marker_color='indianred'
-            ))
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
-            fig.update_layout(xaxis = dict(
-                    tickmode = 'linear',
-                    tick0 = 1,
-                    dtick = 1))
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig
-        else:
-            key = ["No Violation Issued", "Violation Issued"]
-            months = sorted([month for month in df["inspection date"].dt.month.unique()])
-            no_violated= list()
-            violated = list()
-            key = ["No Violation Issued", "Violation Issued"]
-            for month in months:
-                temp_cond = df["inspection date"].dt.month == month
-                value  = dict(df[temp_cond]["inspection result"].value_counts())
-                for k in value:
-                    if k == key[0]:
-                        no_violated.append(value[k])
-                    if k == key[1]:
-                        violated.append(value[k])
-            fig = go.Figure()
-            fig.add_trace(go.Bar(
-                x=months,
-                y=no_violated,
-                name='No Violation Issued',
-                marker_color='lightsalmon'
-            ))
-            fig.add_trace(go.Bar(
-                x=months,
-                y=violated,
-                name='Violation Issued',
-                marker_color='indianred'
-            ))
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
-            fig.update_layout(xaxis = dict(
-                    tickmode = 'linear',
-                    tick0 = 1,
-                    dtick = 1))
-            fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
-            fig
-            
+        cond1 = df["borough"] == borough
+    if year != "All":
+        cond2 = df["year"] == int(year)
+    if industry != "All":
+        cond3 = df["industry"] == industry
+    temp_df1 = df[cond1 & cond2 & cond3]
+    key = ["No Violation Issued", "Violation Issued"]
+    months = sorted([month for month in df["inspection date"].dt.month.unique()])
+    no_violated= list()
+    violated = list()
+    key = ["No Violation Issued", "Violation Issued"]
+    for month in months:
+        temp_cond = temp_df1["inspection date"].dt.month == month
+        value  = dict(temp_df1[temp_cond]["inspection result"].value_counts())
+        for k in value:
+            if k == key[0]:
+                no_violated.append(value[k])
+            if k == key[1]:
+                violated.append(value[k])
+    temp_df = pd.DataFrame(columns = key)
+    temp_df["No Violation Issued"] = no_violated
+    temp_df["Violation Issued"] = violated
+    temp_df["Month"] = months
+    
+    fig = px.bar(temp_df, x="Month", y=["No Violation Issued", "Violation Issued"],width=1920*0.7, height=1080*0.7)
+    fig.update_layout(
+        xaxis = dict(
+            tickmode = 'linear',
+            tick0 = 1,
+            dtick = 1
+        )
+    )
+
+    fig
+
 #Creating values options for user interface
 
 #Creating borough options
@@ -288,16 +163,13 @@ def create_metric(df, borough, year, industry):
     st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', year)
 
 #Split to cols
-col1, col2 = st.columns([1,1])
-col1.title("NYC Inspection Data Visualizer") # H1 tag
+st.title("NYC Inspection Data Visualizer") # H1 tag
 create_map(df, borough, year, industry)
 create_metric(df, borough, year, industry)
-col2.title("Amount of monthly inspection in " + year)
-bar_chart(df, borough, year)
 st.title("Inspection results for " + industry + " industry in " + borough + " borough in " + year)
 pie_chart(df, borough, year, industry)
-st.title("Number of Violation and Non-Violation in " + year)
-compared_bar(df, borough, year)
+st.title("Number of Violation and Non-Violation in " + borough + " for industry " + industry + " in " + year)
+stacked_bar(df, borough, year, industry)
 
 
 
