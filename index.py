@@ -5,8 +5,6 @@ from datetime import datetime
 import plotly.graph_objects as go
 import plotly.express as px
 
-
-
 st.set_page_config( # head tag
 
     page_title="NYC Inspection", 
@@ -20,10 +18,6 @@ st.set_page_config( # head tag
                 ***Streamlit app*** that visualizes New York City Inspection data 
                 """ #supports markdown
     })
-
-
-
-
 
 df = pd.read_csv("./data/data.csv")
 df.columns = df.columns.str.lower()
@@ -39,24 +33,18 @@ df["year"] = df["inspection date"].dt.year
 df["year"]=df["year"]
 
 
-
-def create_map(df,borough,year):
+def create_map(df,borough,year,ind):
+    cond1 = df["year"] > 1900
+    cond2 = df["year"] > 1900
+    cond3 = df["year"] > 1900
     if borough != "All":
-        if year != "All":
-            cond1 = df["borough"] == borough
-            cond2 = df["year"] == int(year)
-            df = df[cond1 & cond2]
-            col1.map(df)
-        else:
-            df = df[df['borough'] == borough]
-            col1.map(df)
-    else:
-        if year != "All":
-            df = df[df["year"] == int(year)]
-            col1.map(df)
-        else:
-            col1.map(df)
-
+        cond1 = df["borough"] == borough
+    if year != "All":
+        cond2 = df["year"] == int(year)
+    if ind != "All":
+        cond3 = df["industry"] == ind
+    df = df[cond1 & cond2 & cond3]
+    col1.map(df)
 
 def bar_chart(df,borough,year):
     if borough != "All":
@@ -338,7 +326,7 @@ def creat_metric(df, borough, year):
 #Split to cols
 col1, col2 = st.columns([1,1])
 col1.title("NYC Inspection Data Visualization") # H1 tag
-create_map(df, borough, year)
+create_map(df, borough, year, industry)
 creat_metric(df, borough, year)
 col2.title("Amount monthly inspection in " + year)
 bar_chart(df, borough, year)
