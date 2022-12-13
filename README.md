@@ -15,6 +15,10 @@ Create a web app that consists of data visualizations insight on New York City's
 [NYC Open Data](https://data.cityofnewyork.us/Business/Inspections/jzhd-m6uv)
 > A catlog of data of Airbnb from around the world updated quarterly
 
+## Live Web App
+
+[Live Web App](https://hieutrn1205-ctp-index-at1yi7.streamlit.app/)
+
 ## File Directory
 - ### index.py 
   > Location of the code for the web app and visualizations
