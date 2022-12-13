@@ -90,12 +90,13 @@ def stacked_bar(df, borough, year, industry):
                 no_violated.append(value[k])
             if k == key[1]:
                 violated.append(value[k])
-    temp_df = pd.DataFrame(columns = key)
-    temp_df["No Violation Issued"] = no_violated
-    temp_df["Violation Issued"] = violated
-    temp_df["Month"] = months
+        temp_df = pd.DataFrame({"Months" : months})
+        temp_dataf = pd.DataFrame({"Violation Issued": violated})
+        temp_dataf1 = pd.DataFrame({"No Violation Issued" : no_violated})
+        new_df = pd.concat([temp_df,temp_dataf, temp_dataf1], ignore_index=True, axis=1)
+        new_df.columns = ["Month", "Violation Issued", "No Violation Issued"]
     
-    fig = px.bar(temp_df, x="Month", y=["No Violation Issued", "Violation Issued"],width=1920*0.7, height=1080*0.7)
+    fig = px.bar(new_df, x="Month", y=["No Violation Issued", "Violation Issued"],width=1920*0.7, height=1080*0.7)
     fig.update_layout(
         xaxis = dict(
             tickmode = 'linear',
