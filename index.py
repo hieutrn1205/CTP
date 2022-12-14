@@ -150,7 +150,7 @@ def create_metric(df, borough, industry):
     num_inspection = len(df)
     temp = round((num_inspection/original)*100, 2)
     temp = str(temp) + "%"
-    st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', str(start_year) + " - " + str(end_year))
+    st.write(industry, ' industry in ', borough, ' borough from ', str(start_year) + " - " + str(end_year), ' is '  , temp, ' of all inspections.')
 
 #Split to cols
 st.title("NYC Inspection Data Visualizer") # H1 tag
