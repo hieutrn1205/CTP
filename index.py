@@ -34,30 +34,28 @@ df["year"] = df["inspection date"].dt.year
 df["year"]=df["year"]
 
 
-def create_map(df,borough,year,ind):
+def create_map(df,borough, ind):
     cond1 = df["year"] > 1900
     cond2 = df["year"] > 1900
-    cond3 = df["year"] > 1900
+    cond3 = df["year"] >= start_year
+    cond4 = df["year"] <= end_year
     if borough != "All":
         cond1 = df["borough"] == borough
-    if year != "All":
-        cond2 = df["year"] == int(year)
     if ind != "All":
-        cond3 = df["industry"] == ind
-    df = df[cond1 & cond2 & cond3]
+        cond2 = df["industry"] == ind
+    df = df[cond1 & cond2 & cond3 & cond4]
     st.map(df)
 
-def pie_chart(df, borough, year, industry):
+def pie_chart(df, borough, industry):
     cond1 = df["year"] > 1900
     cond2 = df["year"] > 1900
-    cond3 = df["year"] > 1900
+    cond3 = df["year"] >= start_year
+    cond4 = df["year"] <= end_year
     if borough != "All":
         cond1 = df["borough"] == borough
     if industry != "All":
         cond2 = df["industry"] == industry
-    if year != "All":
-        cond3 = df["year"] == int(year)
-    df = df[cond1 & cond2 & cond3]
+    df = df[cond1 & cond2 & cond3 & cond4 ]
     labels = [index for index in df["inspection result"].value_counts().index]
     value = [value for value in df["inspection result"].value_counts().values]
     fig = go.Figure(data=[go.Pie(labels = labels, values= value)])
@@ -66,17 +64,16 @@ def pie_chart(df, borough, year, industry):
     fig.update_layout(uniformtext_minsize=12, uniformtext_mode='hide')
     fig
 
-def stacked_bar(df, borough, year, industry):
+def stacked_bar(df, borough, industry):
     cond1 = df["year"] > 1900
     cond2 = df["year"] > 1900
-    cond3 = df['year'] > 1900
+    cond3 = df['year'] >= start_year
+    cond4 = df["year"] <= end_year
     if borough != "All":
         cond1 = df["borough"] == borough
-    if year != "All":
-        cond2 = df["year"] == int(year)
     if industry != "All":
-        cond3 = df["industry"] == industry
-    temp_df1 = df[cond1 & cond2 & cond3]
+        cond2 = df["industry"] == industry
+    temp_df1 = df[cond1 & cond2 & cond3 & cond4]
     key = ["No Violation Issued", "Violation Issued"]
     months = sorted([month for month in df["inspection date"].dt.month.unique()])
     no_violated= list()
@@ -122,18 +119,6 @@ with st.sidebar: #creates side bar
         options = borough_values
     )
     if borough != "All":
-        year_values =list(np.insert(sorted([str(i) for i in df["year"].unique()]),0,values="All"))
-        year = st.selectbox(
-            label="Select Inspection Year",
-            options = year_values
-        )
-    else:
-        year_values =list(np.insert(sorted([str(i) for i in df["year"].unique()]),0,values="All"))
-        year = st.selectbox(
-            label="Select Inspection Year",
-            options = year_values
-        )
-    if borough != "All":
         industry_values = list(np.insert(df[df["borough"] == borough]["industry"].value_counts().index, 0, values = "All"))
         industry = st.selectbox(
             label = "Industry Selection",
@@ -145,32 +130,36 @@ with st.sidebar: #creates side bar
             label = "Industry Selection",
             options = industry_values
         )
+    year_values =sorted(df["year"].unique())
+    start_year, end_year = st.select_slider(
+    label = 'Select a range of year for inspection.',
+    options=year_values,
+    value=(year_values[0], year_values[2]))
 
-def create_metric(df, borough, year, industry):
+def create_metric(df, borough, industry):
     original = len(df)
     cond1 = df["year"] > 1900
     cond2 = df["year"] > 1900
-    cond3 = df["year"] > 1900
+    cond3 = df["year"] >= start_year
+    cond4 = df["year"] <= end_year
     if borough != "All":
         cond1 = df["borough"] == borough
     if industry != "All":
         cond2 = df["industry"] == industry
-    if year != "All":
-        cond3 = df["year"] == int(year)
-    df = df[cond1 & cond2 & cond3]
+    df = df[cond1 & cond2 & cond3 & cond4]
     num_inspection = len(df)
     temp = round((num_inspection/original)*100)
     temp = str(temp) + "%"
-    st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', year)
+    st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', str(start_year) + " - " + str(end_year))
 
 #Split to cols
 st.title("NYC Inspection Data Visualizer") # H1 tag
-create_map(df, borough, year, industry)
-create_metric(df, borough, year, industry)
-st.title("Inspection results for " + industry + " industry in " + borough + " borough in " + year)
-pie_chart(df, borough, year, industry)
-st.title("Number of Violation and Non-Violation in " + borough + " for industry " + industry + " in " + year)
-stacked_bar(df, borough, year, industry)
+create_map(df, borough, industry)
+create_metric(df, borough, industry)
+st.title("Inspection results for " + industry + " industry in " + borough + " borough in " + str(start_year) + " - " + str(end_year) )
+pie_chart(df, borough, industry)
+st.title("Number of Violation and Non-Violation in " + borough + " for industry " + industry + " in " + str(start_year) + " - " + str(end_year))
+stacked_bar(df, borough, industry)
 
 
 
