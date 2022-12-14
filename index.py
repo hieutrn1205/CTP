@@ -148,7 +148,7 @@ def create_metric(df, borough, industry):
         cond2 = df["industry"] == industry
     df = df[cond1 & cond2 & cond3 & cond4]
     num_inspection = len(df)
-    temp = round((num_inspection/original)*100)
+    temp = round((num_inspection/original)*100, 2)
     temp = str(temp) + "%"
     st.write(industry, ' industry in ', borough, ' borough  is ', temp, 'of all inspections in ', str(start_year) + " - " + str(end_year))
 
