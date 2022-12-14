@@ -20,7 +20,7 @@ st.set_page_config( # head tag
                 """ #supports markdown
     })
 
-df = pd.read_csv("./data.csv")
+df = pd.read_csv("/data.csv")
 df.columns = df.columns.str.lower()
 df["inspection date"] = pd.to_datetime(df["inspection date"])
 error = df["longitude"] <-77
