@@ -17,7 +17,7 @@ Create a web app that consists of data visualizations insight on New York City's
 
 ## Live Web App
 
-[Live Web App](https://hieutrn1205-ctp-index-at1yi7.streamlit.app/)
+[Live Web App](https://business-inspection.streamlit.app/)
 
 ## File Directory
 - ### index.py 
